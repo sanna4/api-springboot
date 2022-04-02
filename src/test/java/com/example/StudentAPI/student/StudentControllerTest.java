@@ -63,7 +63,7 @@ class StudentControllerTest {
     }
 
     @Test
-    void shouldRespondeWith404() throws Exception {
+    void shouldRespondeWithNotFoundStatus() throws Exception {
         when(service.getStudent(1)) //delete, put
                 .thenThrow(new StudentNotFoundException(1));
         this.mockMvc
@@ -86,6 +86,16 @@ class StudentControllerTest {
     void shouldDeleteStudent() throws Exception {
         this.mockMvc
                 .perform(MockMvcRequestBuilders.delete("/api/v1/students/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("1"));
+    }
+    @Test
+    void shouldUpdateStudent() throws Exception {
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .put("/api/v1/students/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Mario Rossi\", \"mail\":\"mario.rossi@student.com\"}"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("1"));
     }
