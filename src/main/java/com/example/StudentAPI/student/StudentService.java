@@ -28,11 +28,11 @@ public class StudentService {
         return studentRepo.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
     }
 
-    public void addStudent(Student student) {
+    public Student addStudent(Student student) {
         if (this.isMailFormatValid(student.getMail())) {
             Optional<Student> valid = studentRepo.findStudentByMail(student.getMail());
             if (!valid.isPresent()) {
-                studentRepo.save(student);
+                return studentRepo.save(student);
             } else {
                 throw new MailTakenException(student.getMail());
             }

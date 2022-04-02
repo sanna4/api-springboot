@@ -2,6 +2,7 @@ package com.example.StudentAPI.student;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -63,15 +64,6 @@ class StudentControllerTest {
     }
 
     @Test
-    void shouldRespondeWithNotFoundStatus() throws Exception {
-        when(service.getStudent(1)) //delete, put
-                .thenThrow(new StudentNotFoundException(1));
-        this.mockMvc
-                .perform(MockMvcRequestBuilders.get("/api/v1/students/1"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
-
-    @Test
     void shouldAddStudent() throws Exception {
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -98,6 +90,26 @@ class StudentControllerTest {
                         .content("{\"name\":\"Mario Rossi\", \"mail\":\"mario.rossi@student.com\"}"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("1"));
+    }
+
+    @Test
+    void shouldRespondWithNotFoundStatus() throws Exception {
+        when(service.getStudent(1)) //delete, put
+                .thenThrow(new StudentNotFoundException(1));
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.get("/api/v1/students/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    void shouldRespondWithBadRequestStatus() throws Exception {
+        when(service.addStudent(any(Student.class))) //put
+                .thenThrow(new MailFormatException(""));
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.post("/api/v1/students")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Mario Rossi\", \"mail\":\"mar@student.com\"}"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 
