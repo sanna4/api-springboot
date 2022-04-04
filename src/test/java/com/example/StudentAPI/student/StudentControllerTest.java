@@ -2,7 +2,6 @@ package com.example.StudentAPI.student;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,10 +11,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -102,13 +100,20 @@ class StudentControllerTest {
     }
 
     @Test
-    void shouldRespondWithBadRequestStatus() throws Exception {
+    void shouldRespondWithBadRequestStatus_MailFormat() throws Exception {
         when(service.addStudent(any(Student.class))) //put
                 .thenThrow(new MailFormatException(""));
         this.mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/students")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Mario Rossi\", \"mail\":\"mar@student.com\"}"))
+                .perform(MockMvcRequestBuilders.post("/api/v1/students"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void shouldRespondeWithBadRequest_MailTaken() throws Exception {
+        when(service.addStudent(any(Student.class))) //put
+                .thenThrow(new MailFormatException(("")));
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.post("/api/v1/students"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

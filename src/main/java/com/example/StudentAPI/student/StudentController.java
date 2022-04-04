@@ -25,9 +25,9 @@ public class StudentController {
      }
 
     @PostMapping
-    public ResponseEntity<String> addStudent(@RequestBody Student student) {
-        service.addStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public Student addStudent(@RequestBody Student student) {
+        return service.addStudent(student);
     }
 
     @DeleteMapping("/{id}")

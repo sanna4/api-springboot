@@ -1,16 +1,8 @@
 package com.example.StudentAPI.student;
 
-import com.sun.jndi.toolkit.url.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.function.ServerRequest;
 
-import javax.swing.text.html.Option;
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,13 +40,18 @@ public class StudentService {
 
     public void updateStudent(long id, Student student) {
         if (this.isMailFormatValid(student.getMail())) {
-            studentRepo.findById(id).map(
-                            s -> {
-                                s.setName(student.getName());
-                                s.setMail(student.getMail());
-                                return studentRepo.save(s);
-                            })
-                    .orElseThrow(() -> new StudentNotFoundException(id));
+            Optional<Student> valid = studentRepo.findStudentByMail(student.getMail());
+            if (!valid.isPresent()) {
+                studentRepo.findById(id).map(
+                                s -> {
+                                    s.setName(student.getName());
+                                    s.setMail(student.getMail());
+                                    return studentRepo.save(s);
+                                })
+                        .orElseThrow(() -> new StudentNotFoundException(id));
+            } else {
+                throw new MailTakenException(student.getMail());
+            }
         } else {
             throw new MailFormatException(student.getMail());
         }
