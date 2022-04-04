@@ -2,6 +2,7 @@ package com.example.StudentAPI.student;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,12 +12,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.print.attribute.standard.Media;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @WebMvcTest
@@ -93,28 +94,35 @@ class StudentControllerTest {
     @Test
     void shouldRespondWithNotFoundStatus() throws Exception {
         when(service.getStudent(1)) //delete, put
-                .thenThrow(new StudentNotFoundException(1));
+                .thenThrow(new StudentNotFoundException());
         this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/v1/students/1"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().string("Student not found"));
     }
 
     @Test
     void shouldRespondWithBadRequestStatus_MailFormat() throws Exception {
         when(service.addStudent(any(Student.class))) //put
-                .thenThrow(new MailFormatException(""));
+                .thenThrow(new MailFormatException());
         this.mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/students"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .perform(MockMvcRequestBuilders.post("/api/v1/students")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Mocking\", \"mail\":\"mock@student.com\"}"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("Invalid mail format"));
     }
 
     @Test
-    void shouldRespondeWithBadRequest_MailTaken() throws Exception {
-        when(service.addStudent(any(Student.class))) //put
-                .thenThrow(new MailFormatException(("")));
+    void shouldRespondWithBadRequest_MailTaken() throws Exception {
+        when(service.addStudent(any(Student.class)))
+                .thenThrow(new MailTakenException());
         this.mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/students"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .perform(MockMvcRequestBuilders.post("/api/v1/students")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Mocking\", \"mail\":\"mock@student.com\"}"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("Mail already used"));
     }
 
 

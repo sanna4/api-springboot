@@ -17,52 +17,41 @@ public class StudentService {
     }
 
     public Student getStudent(long id) {
-        return studentRepo.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
+        return studentRepo.findById(id).orElseThrow(() -> new StudentNotFoundException());
     }
 
     public Student addStudent(Student student) {
-        if (this.isMailFormatValid(student.getMail())) {
-            Optional<Student> valid = studentRepo.findStudentByMail(student.getMail());
-            if (!valid.isPresent()) {
-                return studentRepo.save(student);
-            } else {
-                throw new MailTakenException(student.getMail());
-            }
-        } else {
-            throw new MailFormatException(student.getMail());
-        }
+        try {
+            checkMail(student.getMail());
+        } catch (RuntimeException e)  { throw e; }
+        return studentRepo.save(student);
     }
 
     public void deleteStudent(long id) {
         studentRepo.delete(studentRepo.findById(id)
-                        .orElseThrow(() -> new StudentNotFoundException(id)));
+                        .orElseThrow(() -> new StudentNotFoundException()));
     }
 
     public void updateStudent(long id, Student student) {
-        if (this.isMailFormatValid(student.getMail())) {
-            Optional<Student> valid = studentRepo.findStudentByMail(student.getMail());
-            if (!valid.isPresent()) {
-                studentRepo.findById(id).map(
-                                s -> {
-                                    s.setName(student.getName());
-                                    s.setMail(student.getMail());
-                                    return studentRepo.save(s);
-                                })
-                        .orElseThrow(() -> new StudentNotFoundException(id));
-            } else {
-                throw new MailTakenException(student.getMail());
-            }
-        } else {
-            throw new MailFormatException(student.getMail());
-        }
-
+        try {
+            checkMail(student.getMail());
+        } catch (RuntimeException e) { throw e; }
+        studentRepo.findById(id).map(
+                s -> {
+                    s.setName(student.getName());
+                    s.setMail(student.getMail());
+                    return studentRepo.save(s);
+                }
+        ).orElseThrow(() -> new StudentNotFoundException());
     }
 
-    private boolean isMailFormatValid(String mail) {
-        if (mail.indexOf("@") == -1) {
-            return false;
-        }
+    private void checkMail(String mail) {
         String[] split = mail.split("@");
-        return split[0].length() > 4 && split[1].equals("student.com");
+        if (mail.indexOf("@") == -1 || split[0].length() < 5 || !split[1].equals("student.com")) {
+            throw new MailFormatException();
+        }
+        if (studentRepo.findStudentByMail(mail).isPresent()) {
+            throw new MailTakenException();
+        }
     }
 }
