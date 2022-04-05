@@ -47,7 +47,7 @@ Questa classe, dunque, implementa un metodo per ogni chiamata del *RestControlle
 * nel caso in cui i controlli non vengono superati, viene lanciato un errore, che varia in base al tipo di problema risontrato; nel caso dell'applicazione di esempio,
   i controlli sono effettuati sull'esistenza di un elemento con id specificato dalla richiesta client, la validità del formato dell'indirizzo mail usato e le mail duplicate.
 
-La classe viene annotata come @Service, in modo tale che la sua natura sia riconoscibile e utilizza, per recuperare i dati, una *studentRepo* (segue), inizializzta e
+La classe viene annotata come @Service, in modo tale che la sua natura sia riconoscibile (inoltre, ci permette di implementare *dependency injection*) e utilizza, per recuperare i dati, una *studentRepo* (segue), inizializzta e
 implementata usando l'annotazione @Autowired
 
 ### Repository
