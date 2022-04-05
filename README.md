@@ -83,7 +83,7 @@ L'applicazione presenta anche una parte di *integration test*, che ha il compito
 La classe *StudentControllerTest* utilizza l'annotazione *@WebMvcTest*, che permette di implementare dei test sull'intera infrastruttura. La classe utilizza
 uno *StudentService* *mock* (finto), un *web application context* e un *MockMvc*: questi componenti permettono di implementare una struttura di test che ci
 permetta di capire il comportamento dell'applicazione per ogni richiesta HTTP senza effettuare alcuna chiamata reale.
-Un'altra importante libreria che viene utilizzata per il testing, oltre a JUnit 5, è *Mockito*, che ci permette, tra le sue funzionalità, di indicare il valore
+Un'altra importante libreria che viene utilizzata per il testing, oltre a *JUnit 5*, è *Mockito*, che ci permette, tra le sue funzionalità, di indicare il valore
 restituito da un metodo nel momento in cui viene chiamato.
 ### Esempio: shouldReturnStudent()
 Questo metodo ha il compito di testare una chiamata (corretta) per recuperare uno studente dal database (test del metodo *getStudent(id)*).
