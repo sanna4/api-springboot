@@ -1,8 +1,9 @@
 # REST API CON SPRING BOOT
 ## Introduzione
-API di test sviluppata utilizzando il framework Spring Boot. L'applicazione è molto semplice ed offre la gestione di un servizio per studenti (id, nome completo,
-indirizzo e-mail). Implementazione di *integration test* per i servizi.
-La struttura utilizzata è quella standard per lo sviluppo di servizi API.
+
+Il codice sorgente implementa una semplice API per recuperare dati relativi a studenti (nome e indirizzo e-mail). L'obiettivo è quello di utilizzare le modalità
+di sviluppo standard del framework *Spring Boot* per la creazione di applicazioni back-end per un progetto base, implementando le 5 chiamate fondamentali di qualsiasi
+REST API (GET (totale e di un singolo elemento), POST, DELETE, PUT), la gestione lato server degli errori 4xx e il testing delle varie funzionalità tramite *integration test*, utilizzando le librerie *JUnit* e *Mockito*.  
 
 ## Struttura del applicazione
 ### Model
@@ -20,9 +21,9 @@ implementati automaticamente.
 
 ### Controller
 
-La classe *StudentController* permette di gestire le risposte che il server invia al client, grazie all'introduzione dell'annotazione ***RestController***; l'altra
-annotazione usata a livello di classe è *RequestMapping("api/v1/students")* che indica l'URL su cui vengono mappate le richieste API. Ogni metodo è inoltre annotato
-in base alla richiesta HTTP che soddisfa (***NomeRichiesta**Mapping*, dove ***NomeRichiesta*** sarà Get, Post, ...). Dove necessario, viene indicato anche il completamento dell'URL (tra parentesi, spesso - quasi sempre - ("/{id}"), indicando dunque un valore variabile
+La classe *StudentController* permette di gestire le risposte che il server invia al client, grazie all'introduzione dell'annotazione ***@RestController***; l'altra
+annotazione usata a livello di classe è *@RequestMapping("api/v1/students")* che indica l'URL su cui vengono mappate le richieste API. Ogni metodo è inoltre annotato
+in base alla richiesta HTTP che soddisfa (***@[RequestName]Mapping***, dove ***[RequestName]*** sarà Get, Post, ...). Dove necessario, viene indicato anche il completamento dell'URL (tra parentesi, spesso - quasi sempre - ("/{id}"), indicando dunque un valore variabile
 pari all'URI della risorsa richiesta), che viene recuperato dal metodo utilizzando l'annotazione *@PathVariable* sull'argomento specifico.
 Per quei metodi in cui il client passa informazioni al server tramite il corpo della richiesta, i metodi che gestiscono tali chiamate recuperano tali informazioni usando
 l'annotazione *@RequestBody* prima del argomento del metodo che rappresenta l'entità.
@@ -46,7 +47,7 @@ Questa classe, dunque, implementa un metodo per ogni chiamata del *RestControlle
 * nel caso in cui i controlli non vengono superati, viene lanciato un errore, che varia in base al tipo di problema risontrato; nel caso dell'applicazione di esempio,
   i controlli sono effettuati sull'esistenza di un elemento con id specificato dalla richiesta client, la validità del formato dell'indirizzo mail usato e le mail duplicate.
 
-La classe viene annotata come @Service, in modo tale che la sua natura sia riconoscibile e utilizza, per recuperare i dati, una *studentRepo* (segue), inizializzta e
+La classe viene annotata come @Service, in modo tale che la sua natura sia riconoscibile (inoltre, ci permette di implementare *dependency injection*) e utilizza, per recuperare i dati, una *studentRepo* (segue), inizializzta e
 implementata usando l'annotazione @Autowired
 
 ### Repository
@@ -96,8 +97,3 @@ Oltre ad implementare i test per ogni chiamata API corretta, sono stati implemen
 errore (NotFound, MailFormat, MailTaken), per capire se i codici di errore sono stati implementati correttamente. In questo caso, la chiamata *when()* è
 seguita da una chiamata *thenThrow()*, che permette di lanciare un errore.
 La parte di testing è importante, perchè permette di correggere errori nel codice prima di mettere in funzione effettivamente l'applicazione.
-
-
-
-
-
