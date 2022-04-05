@@ -23,7 +23,7 @@ implementati automaticamente.
 
 La classe *StudentController* permette di gestire le risposte che il server invia al client, grazie all'introduzione dell'annotazione ***@RestController***; l'altra
 annotazione usata a livello di classe è *@RequestMapping("api/v1/students")* che indica l'URL su cui vengono mappate le richieste API. Ogni metodo è inoltre annotato
-in base alla richiesta HTTP che soddisfa (*@**[RequestName]**Mapping*, dove ***[RequestName]*** sarà Get, Post, ...). Dove necessario, viene indicato anche il completamento dell'URL (tra parentesi, spesso - quasi sempre - ("/{id}"), indicando dunque un valore variabile
+in base alla richiesta HTTP che soddisfa (*@****[RequestName]**Mapping*, dove ***[RequestName]*** sarà Get, Post, ...). Dove necessario, viene indicato anche il completamento dell'URL (tra parentesi, spesso - quasi sempre - ("/{id}"), indicando dunque un valore variabile
 pari all'URI della risorsa richiesta), che viene recuperato dal metodo utilizzando l'annotazione *@PathVariable* sull'argomento specifico.
 Per quei metodi in cui il client passa informazioni al server tramite il corpo della richiesta, i metodi che gestiscono tali chiamate recuperano tali informazioni usando
 l'annotazione *@RequestBody* prima del argomento del metodo che rappresenta l'entità.
