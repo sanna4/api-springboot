@@ -93,7 +93,7 @@ class StudentControllerTest {
 
     @Test
     void shouldRespondWithNotFoundStatus() throws Exception {
-        when(service.getStudent(1)) //delete, put
+        when(service.getStudent(anyLong())) //delete, put
                 .thenThrow(new StudentNotFoundException());
         this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/v1/students/1"))
